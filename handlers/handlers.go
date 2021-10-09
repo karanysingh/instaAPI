@@ -6,7 +6,10 @@ import (
     "strings"
 	"strconv"
 	"encoding/json"
+	"reflect"
     "log"
+	models "instapi/models"
+
 	L "instapi/helper"
 )
 
@@ -16,16 +19,22 @@ var r *http.Request
 func CreateUser(wr http.ResponseWriter, req *http.Request) {
 	w = wr
 	r = req
-	var userdata []string
+	// var userdata []string
+	u := models.User{}
 	if r.Method == "POST" {
-		log.Println(r.Body)
+		// log.Println(r.Body)
 		log.Println("Create a User")
 
-		for _, values := range r.URL.Query() {
-			userdata = append(userdata,values[0])
+		err := json.NewDecoder(r.Body).Decode(&u)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
-
-		L.AddUser(11,userdata[0],userdata[1],userdata[2])
+	
+		log.Println(u)
+		L.AddUser(u.UserId,u.Name,u.Email,u.Password)
+		log.Println(reflect.TypeOf(u))
+		log.Println(u.Name)
 		fmt.Fprintf(w,"User Created")
 	} else {
 		log.Println("Method not implemented")
@@ -34,15 +43,20 @@ func CreateUser(wr http.ResponseWriter, req *http.Request) {
 func CreatePost(wr http.ResponseWriter, req *http.Request) {
 	w = wr
 	r = req
-	var postdata []string
+	post := models.Post{}
 	if r.Method == "POST" {
-		log.Println("Create a Post")
-		for _, values := range r.URL.Query() {
-			postdata = append(postdata,values[0])
+
+		err := json.NewDecoder(r.Body).Decode(&post)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			return
 		}
-		userId,_ := strconv.Atoi(postdata[0])
-		L.AddPost(11,userId,postdata[1],postdata[2],postdata[3])
+	
+		log.Println(post)
+		L.AddPost(post.PostId,post.UserId,post.Caption,post.Imageurl,post.Timestamp)
+
 		fmt.Fprintf(w,"Post Created")
+		
 	} else {
 		log.Println("Method not implemented")
 	}
@@ -94,8 +108,11 @@ func ShowAllPosts(wr http.ResponseWriter, req *http.Request) {
 		temp := strings.Trim(r.URL.Path, "posts/users/")
 		id,_ := strconv.Atoi(temp)
 		log.Println(id)
-		L.Showall(id)
-
+		posts := L.Showall(id)
+		w.Header().Set("Content-Type", "text/json")
+		postres, _ := json.Marshal(posts)
+		resString := string(postres)
+		fmt.Fprintf(w,resString)
 	} else {
 		log.Println("Method not implemented")
 	}
