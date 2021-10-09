@@ -6,10 +6,9 @@ import (
     "strings"
 	"strconv"
 	"encoding/json"
-	"reflect"
     "log"
 	models "instapi/models"
-
+	encrypt "instapi/encrypt"
 	L "instapi/helper"
 )
 
@@ -30,11 +29,17 @@ func CreateUser(wr http.ResponseWriter, req *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return
 		}
-	
-		log.Println(u)
-		L.AddUser(u.UserId,u.Name,u.Email,u.Password)
-		log.Println(reflect.TypeOf(u))
-		log.Println(u.Name)
+		
+		key := []byte("a very very very very secret key") // 32 bytes
+		plaintext := []byte(u.Password)
+
+		ciphertext, err := encrypt.Encrypt(key, plaintext)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		L.AddUser(u.UserId,u.Name,u.Email,string(ciphertext))
+
 		fmt.Fprintf(w,"User Created")
 	} else {
 		log.Println("Method not implemented")
