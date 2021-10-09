@@ -3,6 +3,7 @@ package main
 import (
 	handlers "instapi/handlers"
 	L "instapi/helper"
+	"log"
 	"net/http"
 	"os"
 )
@@ -24,10 +25,12 @@ func main() {
 	http.HandleFunc("/users/posts/", handlers.ShowAllPosts)
 
 	// LISTENER
-	port, err := os.Getenv("PORT")
+	port := os.Getenv("PORT")
+	// if err != nil {
+	// 	port = "9090"
+	// }
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
-		port = "9090"
+		log.Fatal("ListenAndServe: ", err)
 	}
-
-	app.Run(":" + port)
 }
