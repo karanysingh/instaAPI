@@ -25,3 +25,9 @@
 
 ![Alt text](screenshots/getallpost.png?raw=true "Title")
 
+### 6) Password Encryption
+
+![Alt text](screenshots/passencrypt.png?raw=true "Title")
+
+
+
