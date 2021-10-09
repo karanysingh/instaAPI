@@ -110,7 +110,13 @@ func ShowAllPosts(wr http.ResponseWriter, req *http.Request) {
 	r = req
 	if r.Method == "GET" {
 		log.Println("Show all posts of a User")
+		query := r.URL.Query()
+		limit, present := query["limit"] 
+		if !present || len(limit) == 0 {
+			fmt.Println("filters not present")
+		}
 		temp := strings.Trim(r.URL.Path, "posts/users/")
+		
 		id,_ := strconv.Atoi(temp)
 		log.Println(id)
 		posts := L.Showall(id)
