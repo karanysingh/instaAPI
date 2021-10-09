@@ -91,7 +91,7 @@ func AddPost(postid int,userid int,caption string,imageurl string,timestamp stri
 	return res
 }
 
-func Showall(userid int)([]models.Post){
+func Showall(userid int,limit int)([]models.Post){
 
 	cur, err := postCollection.Find(context.Background(), bson.D{{"userid",int32(userid)}})
     var posts []models.Post
@@ -102,7 +102,12 @@ func Showall(userid int)([]models.Post){
 
     defer cur.Close(context.Background())
     post := models.Post{}
-    for cur.Next(context.Background()) {
+    for i:=0 ;cur.Next(context.Background()); i++ {
+
+        if(i==limit){
+            break
+        }
+        
         err := cur.Decode(&post)
 
         if err != nil { 

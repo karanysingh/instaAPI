@@ -29,5 +29,10 @@
 
 ![Alt text](screenshots/passencrypt.png?raw=true "Title")
 
+### 7) Pagination
+
+![Alt text](screenshots/pagination1.png?raw=true "Title")
+
+![Alt text](screenshots/pagination2.png?raw=true "Title")
 
 
