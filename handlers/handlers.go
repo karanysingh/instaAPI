@@ -39,7 +39,7 @@ func CreateUser(wr http.ResponseWriter, req *http.Request) {
 		}
 
 		L.AddUser(u.UserId, u.Name, u.Email, string(ciphertext))
-		req.Header.Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		fmt.Fprintf(w, "User Created")
 	} else {
 		log.Println("Method not implemented")
@@ -59,7 +59,7 @@ func CreatePost(wr http.ResponseWriter, req *http.Request) {
 
 		log.Println(post)
 		L.AddPost(post.PostId, post.UserId, post.Caption, post.Imageurl, post.Timestamp)
-		req.Header.Add("Access-Control-Allow-Origin", "*")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 
 		fmt.Fprintf(w, "Post Created")
 
@@ -79,9 +79,8 @@ func ShowUser(wr http.ResponseWriter, req *http.Request) {
 		user := L.GetUser(id)
 
 		w.Header().Set("Content-Type", "text/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		userres, _ := json.Marshal(user)
-		req.Header.Add("Access-Control-Allow-Origin", "*")
-
 		fmt.Fprintf(w, string(userres))
 
 	} else {
@@ -99,9 +98,10 @@ func ShowPost(wr http.ResponseWriter, req *http.Request) {
 		post := L.GetPost(id)
 
 		w.Header().Set("Content-Type", "text/json")
+
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		postres, _ := json.Marshal(post)
 		resString := string(postres)
-		req.Header.Add("Access-Control-Allow-Origin", "*")
 
 		fmt.Fprintf(w, resString)
 
@@ -123,9 +123,9 @@ func ShowAllPosts(wr http.ResponseWriter, req *http.Request) {
 		log.Println(id)
 		posts := L.Showall(id, limit)
 		w.Header().Set("Content-Type", "text/json")
+		w.Header().Set("Access-Control-Allow-Origin", "*")
 		postres, _ := json.Marshal(posts)
 		resString := string(postres)
-		req.Header.Add("Access-Control-Allow-Origin", "*")
 
 		fmt.Fprintf(w, resString)
 	} else {
@@ -143,7 +143,7 @@ func SayhelloName(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("key:", k)
 		fmt.Println("val:", strings.Join(v, ""))
 	}
-	r.Header.Add("Access-Control-Allow-Origin", "*")
 
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	fmt.Fprintf(w, "This is Instapi") // send data to client side
 }

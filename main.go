@@ -27,8 +27,9 @@ func main() {
 	// LISTENER
 	port := os.Getenv("PORT")
 	// if err != nil {
-	// 	port = "9090"
+	// port := "9090"
 	// }
+	log.Println(port)
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
